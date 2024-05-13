@@ -43,10 +43,6 @@ def preprocess_image(path, target_size):
     img = img.astype('float32') / 255.0  # normalize pixel values
     return img
 
-@app.get("/")
-async def root():
-    return {"message": "Hello World"}
-
 @app.post("/predict/")
 async def predict(image_file: UploadFile = File(...)):
     # Read the image file as bytes
@@ -61,4 +57,5 @@ async def predict(image_file: UploadFile = File(...)):
     predicted_class = class_labels[1 if (prediction[0][0] < 0.6) else 0]
     print("Predicted class:", predicted_class)
     response_data = {"predicted_class": predicted_class}
+    print(response_data)
     return JSONResponse(content=response_data)
