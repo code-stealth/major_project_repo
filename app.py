@@ -1,4 +1,5 @@
 import uvicorn
+from typing import Annotated
 from fastapi import FastAPI, File, UploadFile
 import joblib
 from PIL import Image
@@ -15,10 +16,10 @@ from fastapi.responses import JSONResponse
 app = FastAPI()
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["http://localhost:5500"],  # Allow requests from this origin
+    allow_origins=['*'],  # Allow requests from this origin
     allow_credentials=True,
-    allow_methods=["GET", "POST"],
-    allow_headers=["*"],
+    allow_methods=['*'],
+    allow_headers=['*'],
 )
 # Load your pre-trained model
 import os
@@ -43,8 +44,13 @@ def preprocess_image(path, target_size):
     img = img.astype('float32') / 255.0  # normalize pixel values
     return img
 
-@app.post("/predict/")
-async def predict(image_file: UploadFile = File(...)):
+# @app.get("/hi")
+# def hey():
+
+@app.post("/predict")
+async def predict(image_file: UploadFile):
+    return {"strange": "result"}
+    print("ldkfjsl")
     # Read the image file as bytes
     file_path = os.path.join(UPLOAD_DIR, image_file.filename)
     with open(file_path, "wb") as f:
@@ -59,3 +65,4 @@ async def predict(image_file: UploadFile = File(...)):
     response_data = {"predicted_class": predicted_class}
     print(response_data)
     return JSONResponse(content=response_data)
+

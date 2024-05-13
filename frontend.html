@@ -183,17 +183,17 @@ footer {
         </div>
       </footer>
     <script>
-        document.getElementById('uploadForm').addEventListener('submit', function(event) {
+        document.getElementById('uploadForm').addEventListener('submit', function( event) {
             event.preventDefault(); // Prevent default form submission
             uploadImage();
         });
 
-        function uploadImage() {
+        async function uploadImage() {
             // alert("Entering the Image upload function")
             const fileInput = document.getElementById('fileInput');
             // alert(fileInput)
             const file = fileInput.files[0];
-            alert(file)
+            // alert(file)
             if (!file) {
                 alert("Please select an image file.");
                 return;
@@ -201,19 +201,48 @@ footer {
 
             const formData = new FormData();
             formData.append('image_file', file);
-            alert(formData)
-            fetch('http://127.0.0.1:8000/predict/', {
-                method: 'POST',
-                body: formData
-            })
-            .then(response => response.json())
-            .then(data => {
-                alert("Received Data")
-                displayResult(data);
-            })
-            .catch(error => {
-                console.error('Error:', error);
-            });
+            console.log(formData);
+            await new Promise((res) => setTimeout(res, 5000))
+
+            try {
+                    const resp = await fetch('http://127.0.0.1:8000/predict/', {
+                    method: 'POST',
+                    headers: {
+                        "Content-Type": "application/json",
+                    },
+                    body: formData
+                });
+                console.log(resp);
+            await new Promise((res) => setTimeout(res, 5000))
+
+            } catch (err) {
+                console.log(err);
+            }
+            
+
+            
+
+            // .then((response) => {
+            //     if (!response) {
+            //         alert("Response not recieved!")
+            //         throw new Error('Network response was not ok');
+            //     }
+            //     console.log(response);
+            //     // alert(response)
+            //     return response.json()
+            // })
+            // // .then(data => 
+            // // {
+            // //     console.log("hey ", data);
+            // //     // alert("Received Data")
+            // //     // displayResult(data);
+            // //     // alert("Result Displayed")
+            // // })
+            // .catch(error => {
+            //     console.error('Error:', error);
+            // });
+
+            await new Promise((res) => setTimeout(res, 55000))
         }
 
         function displayResult(data) {
