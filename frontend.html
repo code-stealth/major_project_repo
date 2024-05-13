@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Image Upload Form</title>
+</head>
+<body>
+    <h1>Image Upload Form</h1>
+    <form id="uploadForm" enctype="multipart/form-data">
+        <input type="file" id="fileInput" name="image_file" accept="image/*">
+        <button type="submit">Upload</button>
+    </form>
+    <div id="result"></div>
+
+    <script>
+        document.getElementById('uploadForm').addEventListener('submit', function(event) {
+            event.preventDefault(); // Prevent default form submission
+            uploadImage();
+        });
+
+        function uploadImage() {
+            // alert("Entering the Image upload function")
+            const fileInput = document.getElementById('fileInput');
+            // alert(fileInput)
+            const file = fileInput.files[0];
+            alert(file)
+            if (!file) {
+                alert("Please select an image file.");
+                return;
+            }
+
+            const formData = new FormData();
+            formData.append('image_file', file);
+            alert(formData)
+            fetch('http://127.0.0.1:8000/predict/', {
+                method: 'POST',
+                body: formData
+            })
+            .then(response => {
+                alert("Respose status:"+ response.status);
+                return response.json();
+            })
+            .then(data => {
+                alert("Received Data")
+                displayResult(data);
+            })
+            .catch(error => {
+                console.error('Error:', error);
+            });
+        }
+
+        function displayResult(data) {
+            console.log("Entering into displayResult function")
+            console.log(data)
+            console.log(typeof(data))
+            const resultDiv = document.getElementById('result');
+            resultDiv.innerHTML = "<h2>Prediction:</h2><pre>" + JSON.stringify(data, null, 2) + "</pre>";
+        }
+    </script>
+</body>
+</html>
